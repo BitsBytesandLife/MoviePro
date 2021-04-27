@@ -296,7 +296,7 @@ namespace MoviePro.data.migration
 
                     b.HasKey("Id");
 
-                    b.ToTable("Move");
+                    b.ToTable("Movie");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

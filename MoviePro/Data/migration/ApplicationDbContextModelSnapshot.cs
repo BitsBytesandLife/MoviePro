@@ -285,6 +285,8 @@ namespace MoviePro.data.migration
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MovieId");
+
                     b.ToTable("Crew");
                 });
 
@@ -327,7 +329,7 @@ namespace MoviePro.data.migration
 
                     b.HasKey("Id");
 
-                    b.ToTable("Move");
+                    b.ToTable("Movie");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -390,9 +392,20 @@ namespace MoviePro.data.migration
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MoviePro.Models.Crew", b =>
+                {
+                    b.HasOne("MoviePro.Models.Movie", null)
+                        .WithMany("Crew")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MoviePro.Models.Movie", b =>
                 {
                     b.Navigation("Cast");
+
+                    b.Navigation("Crew");
                 });
 #pragma warning restore 612, 618
         }

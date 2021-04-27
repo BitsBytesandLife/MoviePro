@@ -29,7 +29,7 @@ namespace MoviePro.data.migration
                 });
 
             migrationBuilder.CreateTable(
-                name: "Move",
+                name: "Movie",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -57,7 +57,7 @@ namespace MoviePro.data.migration
                 name: "Cast");
 
             migrationBuilder.DropTable(
-                name: "Move");
+                name: "Movie");
         }
     }
 }

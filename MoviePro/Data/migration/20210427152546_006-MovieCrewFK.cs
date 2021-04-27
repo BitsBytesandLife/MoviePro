@@ -2,18 +2,18 @@
 
 namespace MoviePro.data.migration
 {
-    public partial class _003CastFK : Migration
+    public partial class _006MovieCrewFK : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateIndex(
-                name: "IX_Cast_MovieId",
-                table: "Cast",
+                name: "IX_Crew_MovieId",
+                table: "Crew",
                 column: "MovieId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Cast_Move_MovieId",
-                table: "Cast",
+                name: "FK_Crew_Movie_MovieId",
+                table: "Crew",
                 column: "MovieId",
                 principalTable: "Movie",
                 principalColumn: "Id",
@@ -23,12 +23,12 @@ namespace MoviePro.data.migration
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Cast_Move_MovieId",
-                table: "Cast");
+                name: "FK_Crew_Movie_MovieId",
+                table: "Crew");
 
             migrationBuilder.DropIndex(
-                name: "IX_Cast_MovieId",
-                table: "Cast");
+                name: "IX_Crew_MovieId",
+                table: "Crew");
         }
     }
 }

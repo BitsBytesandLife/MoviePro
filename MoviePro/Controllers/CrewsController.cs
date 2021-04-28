@@ -2,27 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MoviePro.Data;
 using MoviePro.Models;
+using MoviePro.Services;
 
 namespace MoviePro.Controllers
 {
     public class CrewsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
 
-        public CrewsController(ApplicationDbContext context)
+        public CrewsController(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         // GET: Crews
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Crew.ToListAsync());
+            return View(await _context.Crew.Include(c => c.Movie).ToListAsync());
         }
 
         // GET: Crews/Details/5
@@ -34,6 +38,7 @@ namespace MoviePro.Controllers
             }
 
             var crew = await _context.Crew
+                .Include(c => c.Movie)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (crew == null)
             {
@@ -46,6 +51,7 @@ namespace MoviePro.Controllers
         // GET: Crews/Create
         public IActionResult Create()
         {
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title");
             return View();
         }
 
@@ -54,14 +60,19 @@ namespace MoviePro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MovieId,CrewId,Department,Name,Job,Profile,ContentType")] Crew crew)
+        public async Task<IActionResult> Create([Bind("Id,MovieId,CrewId,Department,Name,Job")] Crew crew, IFormFile Profile)
         {
             if (ModelState.IsValid)
             {
+
+                crew.ContentType = _imageService.RecordContentType(Profile);
+                crew.Profile = await _imageService.EncodePosterAsync(Profile);
+
                 _context.Add(crew);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", crew.MovieId);
             return View(crew);
         }
 
@@ -78,6 +89,7 @@ namespace MoviePro.Controllers
             {
                 return NotFound();
             }
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", crew.MovieId);
             return View(crew);
         }
 
@@ -86,7 +98,7 @@ namespace MoviePro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MovieId,CrewId,Department,Name,Job,Profile,ContentType")] Crew crew)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MovieId,CrewId,Department,Name,Job,Profile,ContentType")] Crew crew, IFormFile NewProfile)
         {
             if (id != crew.Id)
             {
@@ -97,6 +109,12 @@ namespace MoviePro.Controllers
             {
                 try
                 {
+                    if (NewProfile is not null)
+                    {
+                        crew.ContentType = _imageService.RecordContentType(NewProfile);
+                        crew.Profile = await _imageService.EncodePosterAsync(NewProfile);
+                    }
+
                     _context.Update(crew);
                     await _context.SaveChangesAsync();
                 }
@@ -113,6 +131,7 @@ namespace MoviePro.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", crew.MovieId);
             return View(crew);
         }
 

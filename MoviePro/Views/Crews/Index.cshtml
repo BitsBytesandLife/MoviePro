@@ -13,25 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.MovieId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CrewId)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Department)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Job)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Profile)
+                Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ContentType)
+
             </th>
             <th></th>
         </tr>
@@ -40,25 +34,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.MovieId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CrewId)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Department)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Job)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Profile)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContentType)
+                @Html.DisplayFor(modelItem => item.Movie.Title)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
